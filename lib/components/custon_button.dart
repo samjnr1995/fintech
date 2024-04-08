@@ -10,12 +10,14 @@ class CustomButton extends StatelessWidget {
   final String text;
   final bool loading;
   final Color? color;
+  final TextStyle? style;
   final double? width;
   final Function() onTap;
   const CustomButton({
     this.loading = false,
     this.color,
     this.width,
+    this.style,
     required this.onTap,
     this.text = 'Submit',
     this.textColor,
@@ -41,9 +43,10 @@ class CustomButton extends StatelessWidget {
               child: Center(child: CircularProgressIndicator(color: Colors.white,)))
               : Text(
             text,
-            style: GoogleFonts.nunitoSans(color: const Color(0xFFA9A9A9),fontSize: 18.sp),
+            style: style
         ),
       ),
     ));
   }
 }
+//GoogleFonts.nunitoSans(color: const Color(0xFFA9A9A9),fontSize: 18.sp),

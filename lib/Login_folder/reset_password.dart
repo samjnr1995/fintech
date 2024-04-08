@@ -12,6 +12,8 @@ class ResetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -20,51 +22,65 @@ class ResetPassword extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(28.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                Labels.resetPassword,
-                style: GoogleFonts.nunitoSans(
-                    fontSize: 28.sp, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                Labels.pleaseInputEmail,
-                style: GoogleFonts.nunitoSans(
-                    color: const Color(0xFF323438),
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16.sp),
-              ),
-              const SizedBox(
-                height: 70,
-              ),
-              Text(
-                Labels.emailAddress,
-                style: GoogleFonts.nunitoSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: const Color(0xFF838383)),
-              ),
-              const CustomField(
-                hint: Labels.suduu,
-                type: TextInputType.emailAddress,
-                preIcon: Icons.phone ,
-              ),
-              const SizedBox(
-                height: 90,
-              ),
-              CustomButton(
-                onTap: () {
-                  _showResetPasswordDialog(context);
-                },
-                text: Labels.validateEmail,
-                color: const Color(0xFFC3083B),
-              )
-            ],
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  Labels.resetPassword,
+                  style: GoogleFonts.nunitoSans(
+                      fontSize: 28.sp, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  Labels.pleaseInputEmail,
+                  style: GoogleFonts.nunitoSans(
+                      color: const Color(0xFF323438),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp),
+                ),
+                const SizedBox(
+                  height: 70,
+                ),
+                Text(
+                  Labels.emailAddress,
+                  style: GoogleFonts.nunitoSans(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: const Color(0xFF838383)),
+                ),
+                CustomField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return Labels.emailRequired;
+                    } else if (!RegExp(Labels.emailRex)
+                        .hasMatch(value)) {
+                      return Labels.invalidEmail;
+                    }
+                    return null;
+                  },
+                  hint: Labels.suduu,
+                  type: TextInputType.emailAddress,
+                  preIcon:  Icons.phone,color: const Color(0xFFC3083B),
+                ),
+                const SizedBox(
+                  height: 90,
+                ),
+                CustomButton(
+                  onTap: () {
+                    if(formKey.currentState!.validate()) {
+                      _showResetPasswordDialog(context);
+                    }
+                  },
+                  text: Labels.validateEmail, style: GoogleFonts.nunitoSans(color:  Colors.white,fontSize: 18.sp),
+                  color: const Color(0xFFC3083B),
+                )
+              ],
+            ),
           ),
         ),
       ),

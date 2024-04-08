@@ -9,10 +9,12 @@ class CustomField extends StatelessWidget {
   final bool isDisabled;
   final bool readOnly;
   final IconData? icon;
+
   final IconData? preIcon;
   final int? maxlines;
   final int? maxlength;
   final Function()? click;
+  final Color? color;
   final TextEditingController? data;
   final TextInputType type;
   final bool obs;
@@ -25,6 +27,7 @@ class CustomField extends StatelessWidget {
   const CustomField({
     Key? key,
     required this.hint,
+    this.color,
     required this.type,
     this.preIcon,
     this.actualHint,
@@ -66,7 +69,7 @@ class CustomField extends StatelessWidget {
         keyboardType: type,
         controller: data,
         maxLines: maxlines ?? 1,
-        cursorColor: Colors.white,
+        cursorColor: Colors.grey,
         style: const TextStyle(
           fontFamily: 'Poppins', fontSize: 14,),
         decoration: InputDecoration(
@@ -126,7 +129,7 @@ class CustomField extends StatelessWidget {
               ? null
               : Icon(
             preIcon,
-            color: Colors.grey,
+            color: color,
           ),
           suffixIcon: IconButton(
             onPressed: click,

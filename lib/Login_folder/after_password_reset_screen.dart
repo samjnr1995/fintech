@@ -6,9 +6,21 @@ import 'package:sizer/sizer.dart';
 
 import '../components/labels.dart';
 
-class AfterPasswordScreen extends StatelessWidget {
+class AfterPasswordScreen extends StatefulWidget {
   const AfterPasswordScreen({super.key});
 
+  @override
+  State<AfterPasswordScreen> createState() => _AfterPasswordScreenState();
+}
+
+class _AfterPasswordScreenState extends State<AfterPasswordScreen> {
+  bool _passwordInVisible = true;
+  String _passwordFeedback = '';
+  final passwordEditingController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final confirmPasswordEditingController = TextEditingController();
+
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,138 +31,143 @@ class AfterPasswordScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(28.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                Labels.createNewPassword,
-                style: GoogleFonts.manrope(
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF323438),
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                Labels.afterPasswordReset,
-                style: GoogleFonts.nunitoSans(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  Labels.createNewPassword,
+                  style: GoogleFonts.manrope(
+                    fontSize: 28.sp,
+                    fontWeight: FontWeight.w600,
                     color: const Color(0xFF323438),
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16.sp),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              Text(
-                Labels.createNewPassword,
-                style: GoogleFonts.manrope(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.sp,
-                  color: const Color(0xFF838383),
+                  ),
                 ),
-              ),
-              const CustomField(
-                hint: Labels.enterYourPassword,
-                type: TextInputType.emailAddress,
-                icon: Icons.remove_red_eye,
-              ),
-              Text(
-                Labels.passwordRequirement,
-                style: GoogleFonts.nunitoSans(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 10.sp,
-                    color: const Color(0xFF323438)),
-              ),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  ),
-                  Text(
-                    Labels.oneLowerCase,
-                    style: GoogleFonts.nunitoSans(
-                        fontSize: 10.sp,
-                        color: const Color(0xFF323438),
-                        fontWeight: FontWeight.w400),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  ),
-                  Text(
-                    Labels.oneUpperCase,
-                    style: GoogleFonts.nunitoSans(
-                        fontSize: 10.sp,
-                        color: const Color(0xFF323438),
-                        fontWeight: FontWeight.w400),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  ),
-                  Text(
-                    Labels.oneDigit,
-                    style: GoogleFonts.nunitoSans(
-                        fontSize: 10.sp,
-                        color: const Color(0xFF323438),
-                        fontWeight: FontWeight.w400),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  ),
-                  Text(
-                    Labels.oneSpecialCharacter,
-                    style: GoogleFonts.nunitoSans(
-                        fontSize: 10.sp,
-                        color: const Color(0xFF323438),
-                        fontWeight: FontWeight.w400),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Text(
-                Labels.confirmNerPassword,
-                style: GoogleFonts.manrope(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.sp,
-                  color: const Color(0xFF838383),
+                const SizedBox(
+                  height: 30,
                 ),
-              ),
-              const CustomField(
-                hint: Labels.enterYourPassword,
-                type: TextInputType.emailAddress,
-                icon: Icons.remove_red_eye,
-              ),
-              const SizedBox(
-                height: 120,
-              ),
-              CustomButton(
-                onTap: () {
-                  _showResetPasswordDialog(context);
-                },
-                text: Labels.continu,
-                color: const Color(0xFFC3083B),
-              )
-            ],
+                Text(
+                  Labels.afterPasswordReset,
+                  style: GoogleFonts.nunitoSans(
+                      color: const Color(0xFF323438),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                Text(
+                  Labels.createNewPassword,
+                  style: GoogleFonts.manrope(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.sp,
+                    color: const Color(0xFF838383),
+                  ),
+                ),
+                CustomField(
+                  obs: _passwordInVisible,
+                  preIcon: Icons.password,
+                  onChanged: (value) {
+                    setState(() {
+                      _passwordFeedback = _validatePassword(value);
+                    });
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return Labels.passwordRequired;
+                    }
+                    return null;
+                  },
+                  click: () {
+                    setState(() {
+                      _passwordInVisible = !_passwordInVisible;
+                    });
+                  },
+                  icon: _passwordInVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  data: passwordEditingController,
+                  hint: Labels.password,
+                  type: TextInputType.text,
+
+                ),
+
+                Text(
+                  Labels.passwordRequirement,
+                  style: GoogleFonts.nunitoSans(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 10.sp,
+                      color: const Color(0xFF323438)),
+                ),
+
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  Labels.confirmNerPassword,
+                  style: GoogleFonts.manrope(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.sp,
+                    color: const Color(0xFF838383),
+                  ),
+                ),
+                if (_passwordFeedback.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 4),
+                    child: Text(
+                      _passwordFeedback,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                  ),
+                CustomField(
+                  obs: _passwordInVisible,
+                  preIcon: Icons.password,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return Labels.requiredField;
+                    } else if (value != passwordEditingController.text) {
+                      return Labels.mismatch;
+                    }
+                    return null;
+                  },
+                  data: confirmPasswordEditingController,
+                  hint: Labels.enterPassword,
+                  type: TextInputType.text,
+                  click: () {
+                    setState(() {
+                      _passwordInVisible = !_passwordInVisible;
+                    });
+                  },
+                  onChanged: (value) {
+                    value = confirmPasswordEditingController.text;
+                  },
+                  icon: _passwordInVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                ),
+                const SizedBox(
+                  height: 120,
+                ),
+                CustomButton(
+                  onTap: () {
+                    if(_formKey.currentState!.validate()) {
+                      _showResetPasswordDialog(context);
+                    }
+                  },
+                  text: Labels.continu,
+                  color: const Color(0xFFC3083B),
+                  style: GoogleFonts.nunitoSans(
+                      color: const Color(0xFFFFFFFF),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -196,10 +213,7 @@ void _showResetPasswordDialog(BuildContext context) {
                 child: Center(
                     child: Text(
                   Labels.continu,
-                  style: GoogleFonts.nunitoSans(
-                      color: const Color(0xFFFFFFFF),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700),
+                  style:  GoogleFonts.nunitoSans(color:  Colors.white,fontSize: 18.sp),
                 )),
               ),
             ),
@@ -208,4 +222,20 @@ void _showResetPasswordDialog(BuildContext context) {
       );
     },
   );
+}
+String _validatePassword(String value) {
+  if (value.isEmpty) {
+    return Labels.passwordRequired;
+  } else if (value.length < 8) {
+    return 'Password must be at least 8 characters';
+  } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
+    return 'Password must contain at least one uppercase letter';
+  } else if (!RegExp(r'[a-z]').hasMatch(value)) {
+    return 'Password must contain at least one lowercase letter';
+  } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+    return 'Password must contain at least one digit';
+  } else if (!RegExp(r'[!@#$%^&*()_+]').hasMatch(value)) {
+    return 'Password must contain at least one special character';
+  }
+  return '';
 }

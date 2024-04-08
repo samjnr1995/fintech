@@ -1,12 +1,17 @@
 class Labels{
 static const String login = 'Login';
-static const String password = 'Password';
+static const String password = 'Enter Password';
+static const emailRex = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$';
+static const invalidEmail = 'invalid email address';
+static const emailRequired = 'Email is required';
+static const passwordRequired = 'Password is required';
 static const String afterPasswordReset = 'After password reset, your\'e required to create a new password';
 static const String continu = 'continue';
 static const String passwordSuccessfullySet = 'Password set successfully, continue to application dashboard';
 static const String oneLowerCase = 'one lowercase letter';
 static const String oneUpperCase = 'one uppercase letter';
 static const String oneDigit = 'one digit';
+static const String mismatch = 'password mismatch';
 static const String confirmNerPassword = 'Confirm new password';
 static const String oneSpecialCharacter = 'one special character';
 static const String signInWithDetails = 'Please sign in with your emails and the temporary password';
@@ -17,6 +22,8 @@ static const String passwordReset = 'Password reset';
 static const String enterPassword = 'Enter your password';
 static const String createNewPassword = 'Create new password';
 static const String emailAddress = ' Email Address';
+static const String requiredField = 'Required field';
+static const String weakPassword = 'weak password';
 static const String temporaryPassword = 'Temporary Password';
 static const String enterYourPassword = 'enter password';
 static const String suduu = 'suduu1995@gmail.com';
